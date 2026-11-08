@@ -58,19 +58,19 @@ Every acceptance criteria scenario defined in Issue #277 and base Issue #257 was
 
 ### BUG-01: Light Theme White-on-White Modal Header & Invisible Explorer Links
 Modal title, hero amount, and all three transaction explorer link titles render pure white (`#FFFFFF`) on a white modal card (`#FFFFFF`), completely unreadable in Light Theme.
-![BUG-01 Light Theme Modal Invisibility](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/pass2-bug01-light-theme-modal-invisible-text.png)
+![BUG-01 Light Theme Modal Invisibility](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/qa07-light-theme-completed-links-invisible.jpg)
 
 ---
 
 ### BUG-02: Asymmetric Confirm vs Cancel Buttons in Review Drawer
 Confirm CTA is styled as a 54px stadium pill (`borderRadius="$full"`), while Cancel is a 40px rounded rectangle (`borderRadius="$2"`), breaking visual harmony.
-![BUG-02 Asymmetric Review Buttons](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/pass2-bug02-asymmetric-review-buttons.png)
+![BUG-02 Asymmetric Review Buttons](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/qa04-mobile-confirm-button-mismatch.jpg)
 
 ---
 
 ### BUG-03: "Review Bridge" Title Wrap on 320px Mobile
 On narrow 320px viewports, the modal title breaks across two lines (`Review` / `Bridge`), compressing vertical layout above drawer content.
-![BUG-03 Review Title Wrap](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/pass2-bug03-review-title-wrap-320px.png)
+![BUG-03 Review Title Wrap](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/qa04-mobile-review-font-wrap.jpg)
 
 ---
 
@@ -97,13 +97,13 @@ Empty history state in Light Theme renders the `"Refresh"` button text in pure w
 
 ### BUG-07: 16-Decimal Native Provider Fee String Overflow on 320px
 Native provider fee displays 16 unrounded decimals (`17.6294004463614488 CELO`), clipping at the container boundary on narrow viewports (`CELO (native tok`).
-![BUG-07 16-Decimal Overflow](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/pass2-bug07-fee-decimal-overflow-320px.png)
+![BUG-07 16-Decimal Overflow](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/qa10-mobile-fee-overflow.jpg)
 
 ---
 
 ### BUG-08: Misleading Token Approval Failure Copy
 When token approval reverts or fails, the step description under `Approve G$ Needs attention` displays `"Bridge transaction reverted on-chain. Try a smaller amount."`, misleading the user into thinking the bridge transaction executed and reverted on-chain when the bridge transaction was never actually submitted.
-![BUG-08 Approval Misleading Error](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/pass2-bug08-approval-failed-misleading-copy.png)
+![BUG-08 Approval Misleading Error](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/qa05-approval-failed-misleading-error.jpg)
 
 ---
 
