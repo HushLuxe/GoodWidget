@@ -24,7 +24,7 @@ Every acceptance criteria scenario defined in Issue #277 and base Issue #257 was
 | **QA04** | Review & Confirm Flow | Injected Wallet / Runtime Fixtures | **PASS (BUG-02, BUG-03)** | Review drawer presents complete fee breakdown and deferred network switch notice. *(Confirm CTA is a 54px pill while Cancel is a 40px rounded rect; modal title wraps to two lines on 320px screens).* |
 | **QA05** | Rejection & Recovery | Injected Wallet / Mocked SDK | **PASS (BUG-08)** | User wallet rejections and on-chain reverts halt at the exact failed step, render error banner, and provide a working `Retry` button. *(Misleading approval error copy states bridge transaction reverted).* |
 | **QA06** | Stale State & Interruptions | Automated Test Suite | **PASS** | In-flight request ID guards prevent stale quote overwrites. Rapid route and amount switching cancels pending requests cleanly without UI desynchronization. |
-| **QA07** | Progress & Delivery | Injected Wallet / Live Fixtures | **PASS (BUG-01)** | Stepper tracks token approval and cross-chain relay progression. Clickable explorer links for source and provider. *(Light theme renders explorer link titles white-on-white invisible on white card).* |
+| **QA07** | Progress & Delivery | Injected Wallet / Live Fixtures | **PASS (BUG-01)** | Stepper tracks token approval and cross-chain relay progression. Clickable explorer links for source and provider. *(In Light Theme, explorer link titles fail to render, appearing only as empty underlines with icons).* |
 | **QA08** | History Tab & Detail Modal | Injected Wallet / Live Fixtures | **PASS (BUG-06)** | Populated history tab displays live completed transactions. *(In Light Theme, secondary `"Refresh"` button text resolves pure white-on-white (`#FFFFFF` on `#FFFFFF`), invisible until hovered).* |
 | **QA09** | Mobile & Accessibility | Mobile Viewports (390px, 320px) | **PARTIAL** | On 320px viewports, `Amount` and `Balance:` collide (`AmountBalance:`), modal title wraps to 2 lines, and provider cards pinch. Yellow warning text fails WCAG AA contrast. |
 | **QA10** | Lead Design Comparison | Visual Design Comparison | **DOCUMENTED** | Structural layout complies with GoodWalletV2 specs; component radius inconsistencies and color token inheritance gaps documented. |
@@ -37,7 +37,7 @@ Every acceptance criteria scenario defined in Issue #277 and base Issue #257 was
 
 | Bug ID | Severity | Category | Description | Steps to Reproduce | Expected vs. Actual Result |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **BUG-01** | High | Accessibility | Light Theme invisible text on status modal transaction explorer links | Open status modal in Light Theme (`defaultTheme="light"`) | **Expected:** High-contrast text on white card.<br>**Actual:** Explorer link titles render pure white on white background (`#FFFFFF` on `#FFFFFF`), leaving blank underlines with icons. |
+| **BUG-01** | High | Accessibility | Light Theme invisible explorer link text in status modal | Open status modal in Light Theme (`defaultTheme="light"`) | **Expected:** High-contrast, readable explorer link labels.<br>**Actual:** Explorer link titles fail to render, leaving only blank underlines and external link icons. |
 | **BUG-02** | Medium | UI / Styling | Asymmetric Review drawer button heights and border-radii | Open Review Bridge drawer | **Expected:** Harmonious CTA pairing.<br>**Actual:** `Confirm` is a 54px stadium pill (`$full`), while `Cancel` is a 40px rounded rectangle (`$2`). |
 | **BUG-03** | Low | Mobile Layout | "Review Bridge" title breaks across 2 lines on 320px mobile | Set viewport to 320px width and open Review drawer | **Expected:** Heading scales or fits on 1 line.<br>**Actual:** Header wraps onto two lines (`Review` / `Bridge`), compressing vertical drawer space. |
 | **BUG-04** | Medium | Mobile Layout | Amount & Balance header label collision (`AmountBalance:`) on 320px mobile | Open Bridge tab on 320px mobile viewport | **Expected:** Labels wrap or maintain gap.<br>**Actual:** Labels collide with 0px spacing into `AmountBalance: 190.00 G$ MAX`. |
@@ -56,8 +56,8 @@ Every acceptance criteria scenario defined in Issue #277 and base Issue #257 was
 
 > **Submission Evidence Note:** Following strict QA audit standards, only defect captures are embedded below to maintain report conciseness. All captures document live verified bugs in the audited codebase.
 
-### BUG-01: Light Theme White-on-White Invisible Explorer Link Titles
-In the transaction progress/status modal in Light Theme, all three transaction explorer link titles render pure white (`#FFFFFF`) on a white modal card (`#FFFFFF`), making the links appear as empty underlines with external link icons.
+### BUG-01: Light Theme Invisible Explorer Link Titles in Status Modal
+In the transaction progress/status modal when running in Light Theme (`defaultTheme="light"`), all three transaction explorer link labels (`Source transaction`, `Track on LayerZero`, `Destination transaction`) fail to render their text, appearing only as empty underlines with external link icons.
 ![BUG-01 Light Theme Modal Invisibility](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/qa07-light-theme-completed-links-invisible.jpg)
 
 ---
