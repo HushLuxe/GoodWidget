@@ -139,15 +139,15 @@ In `BridgingWidgetView.tsx`, `<Heading>`, `<Badge>`, and `<WalletControls>` are 
 
 ## 4. Live On-Chain Transfer Audit (QA11 & QA12)
 
-- **Connected Wallet:** `0x61757...BB585` (Celo Mainnet)
-- **Token:** GoodDollar (`G$`) — Celo Contract: `0x62B8B11039FcfE5aB0C56E502b1C372A3d2a9c7A`
+- **Connected Wallet:** [`0x61757e66712CEDc6c53E3fa71b1F7B6580CBB585`](https://celoscan.io/address/0x61757e66712CEDc6c53E3fa71b1F7B6580CBB585) (Celo Mainnet)
+- **Token:** GoodDollar (`G$`) — Celo Contract: [`0x62B8B11039FcfE5aB0C56E502b1C372A3d2a9c7A`](https://celoscan.io/token/0x62B8B11039FcfE5aB0C56E502b1C372A3d2a9c7A)
 - **Initial Balance:** 200.00 G$ | 20.00 CELO
 - **Transfer Route:** Celo Mainnet (Chain ID: 42220) ➔ Fuse (Chain ID: 122) via LayerZero
 - **Amount Transferred:** 10.00 G$
 - **Amount Received on Fuse:** 9.99 G$ (reflecting 0.1% protocol fee deduction of 0.01 G$)
 - **On-Chain Evidence:**
-  - **Celo Source Transaction:** [0xeb49c8...](https://celoscan.io/address/0x61757e66580CBB585) (Confirmed on [Celoscan](https://celoscan.io))
-  - **Fuse Destination Transaction:** [0xa5343b...](https://explorer.fuse.io/address/0x61757e66580CBB585) (Delivered and confirmed on [Fuse Explorer](https://explorer.fuse.io))
+  - **Celo Source Transaction:** [0xeb49c84d01f311e669072646611398cd234aa8e1242af6316f9a4f78743a66bf](https://celoscan.io/tx/0xeb49c84d01f311e669072646611398cd234aa8e1242af6316f9a4f78743a66bf)
+  - **Fuse Destination Transaction:** [0xa5343b320a89748fc073cb18789012df9d4342283b133cb9e24e8d027e8699b8](https://explorer.fuse.io/tx/0xa5343b320a89748fc073cb18789012df9d4342283b133cb9e24e8d027e8699b8)
   - **Relay Tracking:** LayerZero Scan confirmed cross-chain delivery
 - **Post-Transfer Balance:** 190.00 G$ | 5.491 CELO
 - **History Tab Verification:** Live transfer persisted in widget history:
