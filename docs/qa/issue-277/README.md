@@ -20,16 +20,16 @@ Every acceptance criteria scenario defined in Issue #277 and base Issue #257 was
 | :--- | :--- | :--- | :--- | :--- |
 | **QA01** | First Use & Connection | Disconnected Fixture (`--no-wallet`) | **PASS** | Widget renders centered; placeholder `Balance: — G$` prevents flash of zero balance; `Connect Wallet` CTA is prominent; tabs switch cleanly. |
 | **QA02** | Routes & Providers | Injected Wallet / Runtime Fixtures | **PASS (BUG-05)** | Axelar is strictly isolated to Celo ↔ Ethereum; LayerZero is active across all supported chains. Zero premature network switch dialogs on route selection. *(Provider selection card inherits pill radius and distorts into a pinched oval).* |
-| **QA03** | Amounts & Fee Segregation | Injected Wallet / Runtime Fixtures | **PASS (BUG-07)** | Protocol fee (0.1% G$) is strictly segregated from native relayer fee (CELO). Decimal normalization (2 decimals on Fuse/ETH, 18 on Celo/XDC) is accurate. *(16-decimal native provider fee string overflows container on small screens).* |
+| **QA03** | Amounts & Fee Segregation | Injected Wallet / Runtime Fixtures | **PASS (BUG-07)** | Protocol fee is strictly segregated from native relayer fee (CELO). Route-specific rates verified: Fuse ➔ Celo quotes apply a 0.5% protocol fee (seen in review fixtures), while Celo ➔ Fuse quotes apply a 0.1% protocol fee (seen in live transfer); both calculations are accurate to contract config. *(16-decimal native provider fee string overflows container on small screens).* |
 | **QA04** | Review & Confirm Flow | Injected Wallet / Runtime Fixtures | **PASS (BUG-02, BUG-03)** | Review drawer presents complete fee breakdown and deferred network switch notice. *(Confirm CTA is a 54px pill while Cancel is a 40px rounded rect; modal title wraps to two lines on 320px screens).* |
 | **QA05** | Rejection & Recovery | Injected Wallet / Mocked SDK | **PASS (BUG-08)** | User wallet rejections and on-chain reverts halt at the exact failed step, render error banner, and provide a working `Retry` button. *(Misleading approval error copy states bridge transaction reverted).* |
 | **QA06** | Stale State & Interruptions | Automated Test Suite | **PASS** | In-flight request ID guards prevent stale quote overwrites. Rapid route and amount switching cancels pending requests cleanly without UI desynchronization. |
-| **QA07** | Progress & Delivery | Injected Wallet / Live Fixtures | **PASS (BUG-01)** | Stepper tracks token approval and cross-chain relay progression. Clickable explorer links for source and provider. *(Light theme renders white modal header and explorer link titles on white card).* |
+| **QA07** | Progress & Delivery | Injected Wallet / Live Fixtures | **PASS (BUG-01)** | Stepper tracks token approval and cross-chain relay progression. Clickable explorer links for source and provider. *(Light theme renders explorer link titles white-on-white invisible on white card).* |
 | **QA08** | History Tab & Detail Modal | Injected Wallet / Live Fixtures | **PASS (BUG-06)** | Populated history tab displays live completed transactions. *(In Light Theme, secondary `"Refresh"` button text resolves pure white-on-white (`#FFFFFF` on `#FFFFFF`), invisible until hovered).* |
 | **QA09** | Mobile & Accessibility | Mobile Viewports (390px, 320px) | **PARTIAL** | On 320px viewports, `Amount` and `Balance:` collide (`AmountBalance:`), modal title wraps to 2 lines, and provider cards pinch. Yellow warning text fails WCAG AA contrast. |
 | **QA10** | Lead Design Comparison | Visual Design Comparison | **DOCUMENTED** | Structural layout complies with GoodWalletV2 specs; component radius inconsistencies and color token inheritance gaps documented. |
 | **QA11** | Independent Live Transfer | Live Celo Mainnet (`0x6175...b585`) | **PASS (Live Confirmed)** | Broadcasted 10.00 G$ transfer on Celo Mainnet via LayerZero. Confirmed on Celoscan (`0xeb49c8...`) and Fuse Explorer (`0xa5343b...`). *(Testing XDC route uncovered destination RPC failure cascading to zero balance BUG-09).* |
-| **QA12** | Live Rejection & Retry | Live Injected Wallet | **PASS (Live Confirmed)** | Live wallet rejection halts cleanly at `Approve G$ Needs attention`, leaving downstream bridging pending. Working `Retry` button restarts flow without page reload. |
+| **QA12** | Live Rejection & Retry | Live Injected Wallet | **PASS (Live Confirmed)** | Live wallet rejection halts cleanly at `Approve G$ Needs attention`, leaving downstream bridging pending. Working `Retry` button restarts flow without page reload (See Section 4 & BUG-08 visual proof). |
 
 ---
 
@@ -37,7 +37,7 @@ Every acceptance criteria scenario defined in Issue #277 and base Issue #257 was
 
 | Bug ID | Severity | Category | Description | Steps to Reproduce | Expected vs. Actual Result |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **BUG-01** | High | Accessibility | Light Theme invisible text on status modal header and explorer links | Open status modal in Light Theme (`defaultTheme="light"`) | **Expected:** High-contrast text on white card.<br>**Actual:** Header and explorer link titles render pure white on white background (`#FFFFFF` on `#FFFFFF`). |
+| **BUG-01** | High | Accessibility | Light Theme invisible text on status modal transaction explorer links | Open status modal in Light Theme (`defaultTheme="light"`) | **Expected:** High-contrast text on white card.<br>**Actual:** Explorer link titles render pure white on white background (`#FFFFFF` on `#FFFFFF`), leaving blank underlines with icons. |
 | **BUG-02** | Medium | UI / Styling | Asymmetric Review drawer button heights and border-radii | Open Review Bridge drawer | **Expected:** Harmonious CTA pairing.<br>**Actual:** `Confirm` is a 54px stadium pill (`$full`), while `Cancel` is a 40px rounded rectangle (`$2`). |
 | **BUG-03** | Low | Mobile Layout | "Review Bridge" title breaks across 2 lines on 320px mobile | Set viewport to 320px width and open Review drawer | **Expected:** Heading scales or fits on 1 line.<br>**Actual:** Header wraps onto two lines (`Review` / `Bridge`), compressing vertical drawer space. |
 | **BUG-04** | Medium | Mobile Layout | Amount & Balance header label collision (`AmountBalance:`) on 320px mobile | Open Bridge tab on 320px mobile viewport | **Expected:** Labels wrap or maintain gap.<br>**Actual:** Labels collide with 0px spacing into `AmountBalance: 190.00 G$ MAX`. |
@@ -56,8 +56,8 @@ Every acceptance criteria scenario defined in Issue #277 and base Issue #257 was
 
 > **Submission Evidence Note:** Following strict QA audit standards, only defect captures are embedded below to maintain report conciseness. All captures document live verified bugs in the audited codebase.
 
-### BUG-01: Light Theme White-on-White Modal Header & Invisible Explorer Links
-Modal title, hero amount, and all three transaction explorer link titles render pure white (`#FFFFFF`) on a white modal card (`#FFFFFF`), completely unreadable in Light Theme.
+### BUG-01: Light Theme White-on-White Invisible Explorer Link Titles
+In the transaction progress/status modal in Light Theme, all three transaction explorer link titles render pure white (`#FFFFFF`) on a white modal card (`#FFFFFF`), making the links appear as empty underlines with external link icons.
 ![BUG-01 Light Theme Modal Invisibility](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/qa07-light-theme-completed-links-invisible.jpg)
 
 ---
@@ -81,10 +81,9 @@ Labels run together without spacing into `AmountBalance: 190.00 G$ MAX` due to m
 
 ---
 
-### BUG-05: Provider Action Button Distortion on Large and Small Screens
-LayerZero provider card inherits `$full` border radius (`9999px`) from `ButtonFrame`. When subtitle copy wraps across multiple lines, the component expands in height (~65px on desktop, ~85px on mobile), causing the curved ends to severely deform into a pinched oval / egg capsule that encroaches onto text and checkmark padding.
-![BUG-05 Desktop Distorted Capsule](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/pass2-bug05-layerzero-desktop-distorted.jpg)
-![BUG-05 Mobile 320px Distorted Capsule](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/pass2-bug05-layerzero-mobile-320px-xdc.jpg)
+### BUG-05: Provider Action Button Distortion on Multi-Line Subtitles
+LayerZero provider card inherits `$full` border radius (`9999px`) from `ButtonFrame`. When subtitle copy wraps across multiple lines, the component expands in height (~85px on mobile), causing the curved ends to severely deform into a pinched oval / egg capsule that encroaches onto text and checkmark padding.
+![BUG-05 Distorted Stadium Capsule](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/pass2-bug05-layerzero-mobile-320px-xdc.jpg)
 
 ---
 
@@ -152,7 +151,12 @@ In `BridgingWidgetView.tsx`, `<Heading>`, `<Badge>`, and `<WalletControls>` are 
 - **Post-Transfer Balance:** 190.00 G$ | 5.491 CELO
 - **History Tab Verification:** Live transfer persisted in widget history:
   `Celo → Fuse, completed, LayerZero · 10.00 G$`
+  ![Live Celo to Fuse Transfer in History Tab](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/pass2-history-completed-transfer.jpg)
 - **Live Network Resilience Finding:** Tested Celo ➔ XDC route. Discovered that `@goodsdks/bridging-sdk` relies on the default viem public XDC RPC (`https://rpc.xdcrpc.com`), which exhausted its call rate limit (`code -32005`), exposing BUG-09.
+
+### Live Wallet Rejection & Error Interception (QA12)
+- **Verified Behavior:** When token approval was rejected in the live injected wallet on Celo Mainnet, the UI intercepted the error cleanly without crashing or freezing. It transitioned to `Approve G$ Needs attention`, left downstream bridging steps safely pending, and rendered an active `Retry` button allowing immediate re-submission.
+- **Visual Evidence:** (See BUG-08 screenshot: [`qa05-approval-failed-misleading-error.jpg`](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/qa05-approval-failed-misleading-error.jpg)).
 
 ---
 
