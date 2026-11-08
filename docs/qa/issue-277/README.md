@@ -43,7 +43,7 @@ Every acceptance criteria scenario defined in Issue #277 and base Issue #257 was
 | **BUG-04** | Medium | Mobile Layout | Amount & Balance header label collision (`AmountBalance:`) on 320px mobile | Open Bridge tab on 320px mobile viewport | **Expected:** Labels wrap or maintain gap.<br>**Actual:** Labels collide with 0px spacing into `AmountBalance: 190.00 G$ MAX`. |
 | **BUG-05** | Medium | UI / Styling | Provider `ActionButton` distorts into pinched oval/egg capsule | View provider selection tile with multi-line subtitle | **Expected:** Clean rounded rectangular card (`$3` / `$4`).<br>**Actual:** Inherits `borderRadius="$full"`. At ~85px height, ends deform into a bulbous egg that encroaches on text padding. |
 | **BUG-06** | High | Accessibility | Secondary `"Refresh"` button text resolves pure white-on-white in Light Theme | View empty history state in Light Theme | **Expected:** Text is readable in unhovered state.<br>**Actual:** Button text is 100% white-on-white invisible; only becomes readable when mouse cursor hovers and fills background blue. |
-| **BUG-07** | Medium | UI / Precision | 16-decimal native provider fee string overflow on 320px & sticker shock | Enter bridge amount and view provider fee on 320px screen | **Expected:** Fee rounded to 4 decimals.<br>**Actual:** Displays 16 unrounded decimals (`17.6294004463614488 CELO`), clipping at container edge (`CELO (native tok`). |
+| **BUG-07** | Medium | UI / Precision | 16-decimal native provider fee string overflow on 320px & sticker shock | Enter bridge amount and view provider fee on 320px screen | **Expected:** Fee rounded to 4 decimals.<br>**Actual:** Displays 16 unrounded decimals (`17.6294004463614488 CELO`), clipping at container edge on 320px (`CELO (native toke`). |
 | **BUG-08** | Medium | UX / Copy | Misleading error copy ("Bridge transaction reverted on-chain") on token approval failure | Reject token approval in wallet or trigger approval revert | **Expected:** Copy states token approval was canceled or failed.<br>**Actual:** Step copy under `Approve G$ Needs attention` states `"Bridge transaction reverted on-chain. Try a smaller amount."` |
 | **BUG-09** | High | Resilience / UX | Destination RPC rate-limit / failure cascades into false zero balance (`0.00 G$`) | Select route where destination RPC fails or rate-limits (e.g. XDC public RPC) | **Expected:** Destination error surfaced while source token balance remains accurate.<br>**Actual:** Widget catches error, clears `bridgeConfig`, and falsely wipes user balance to `Balance: 0.00 G$`. |
 | **BUG-10** | Medium | UX / Code Leak | Raw Solidity revert string `"minAmount"` rendered directly to UI | Enter amount below on-chain contract threshold (e.g. `1` or `9` G$) | **Expected:** Localized copy (`"Minimum bridge amount is 10 G$"`).<br>**Actual:** Widget prints raw unformatted Solidity code token `minAmount` in red. |
@@ -96,8 +96,9 @@ Empty history state in Light Theme renders the `"Refresh"` button text in pure w
 ---
 
 ### BUG-07: 16-Decimal Native Provider Fee String Overflow on 320px
-Native provider fee displays 16 unrounded decimals (`17.6294004463614488 CELO`), clipping at the container boundary on narrow viewports (`CELO (native tok`).
-![BUG-07 16-Decimal Overflow](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/qa10-mobile-fee-overflow.jpg)
+Native provider fee displays 16 unrounded decimals (`17.6294004463614488 CELO`) on standard/desktop viewports, and on 320px narrow mobile screens it overflows and clips off the end of the text (`CELO (native toke`).
+![BUG-07 Desktop 16-Decimal Unrounded](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/pass2-10-dollars-insufficient-fee.jpg)
+![BUG-07 Mobile 320px Fee Overflow Clipping](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/pass2-bug07-fee-overflow-320px.jpg)
 
 ---
 
