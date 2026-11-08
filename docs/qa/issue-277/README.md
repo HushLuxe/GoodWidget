@@ -21,7 +21,7 @@ Every acceptance criteria scenario defined in Issue #277 and base Issue #257 was
 | **QA01** | First Use & Connection | Disconnected Fixture (`--no-wallet`) | **PASS** | Widget renders centered; placeholder `Balance: — G$` prevents flash of zero balance; `Connect Wallet` CTA is prominent; tabs switch cleanly. |
 | **QA02** | Routes & Providers | Injected Wallet / Runtime Fixtures | **PASS (BUG-05)** | Axelar is strictly isolated to Celo ↔ Ethereum; LayerZero is active across all supported chains. Zero premature network switch dialogs on route selection. *(Provider selection card inherits pill radius and distorts into a pinched oval).* |
 | **QA03** | Amounts & Fee Segregation | Injected Wallet / Runtime Fixtures | **PASS (BUG-07)** | Protocol fee is strictly segregated from native relayer fee (CELO). Route-specific rates verified: Fuse ➔ Celo quotes apply a 0.5% protocol fee (seen in review fixtures), while Celo ➔ Fuse quotes apply a 0.1% protocol fee (seen in live transfer); both calculations are accurate to contract config. *(16-decimal native provider fee string overflows container on small screens).* |
-| **QA04** | Review & Confirm Flow | Injected Wallet / Runtime Fixtures | **PASS (BUG-02, BUG-03)** | Review drawer presents complete fee breakdown and deferred network switch notice. *(Confirm CTA is a 54px pill while Cancel is a 40px rounded rect; modal title wraps to two lines on 320px screens).* |
+| **QA04** | Review & Confirm Flow | Injected Wallet / Runtime Fixtures | **PASS (BUG-02, BUG-03)** | Review drawer presents complete fee breakdown and deferred network switch notice. *(Secondary Cancel button has weak outline contrast against dark drawer card compared to primary Confirm pill; modal title wraps to two lines on 320px screens).* |
 | **QA05** | Rejection & Recovery | Injected Wallet / Mocked SDK | **PASS (BUG-08)** | User wallet rejections and on-chain reverts halt at the exact failed step, render error banner, and provide a working `Retry` button. *(Misleading approval error copy states bridge transaction reverted).* |
 | **QA06** | Stale State & Interruptions | Automated Test Suite | **PASS** | In-flight request ID guards prevent stale quote overwrites. Rapid route and amount switching cancels pending requests cleanly without UI desynchronization. |
 | **QA07** | Progress & Delivery | Injected Wallet / Live Fixtures | **PASS (BUG-01)** | Stepper tracks token approval and cross-chain relay progression. Clickable explorer links for source and provider. *(In Light Theme, explorer link titles fail to render, appearing only as empty underlines with icons).* |
@@ -38,7 +38,7 @@ Every acceptance criteria scenario defined in Issue #277 and base Issue #257 was
 | Bug ID | Severity | Category | Description | Steps to Reproduce | Expected vs. Actual Result |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **BUG-01** | High | Accessibility | Light Theme invisible explorer link text in status modal | Open status modal in Light Theme (`defaultTheme="light"`) | **Expected:** High-contrast, readable explorer link labels.<br>**Actual:** Explorer link titles fail to render, leaving only blank underlines and external link icons. |
-| **BUG-02** | Medium | UI / Styling | Asymmetric Review drawer button heights and border-radii | Open Review Bridge drawer | **Expected:** Harmonious CTA pairing.<br>**Actual:** `Confirm` is a 54px stadium pill (`$full`), while `Cancel` is a 40px rounded rectangle (`$2`). |
+| **BUG-02** | Low | UI / Visual Polish | Review drawer secondary Cancel button lacks contrast against dark drawer surface | Open Review Bridge drawer | **Expected:** Secondary Cancel CTA has clear border/background definition.<br>**Actual:** Dark outline Cancel button blends into drawer background next to high-contrast solid blue Confirm pill. |
 | **BUG-03** | Low | Mobile Layout | "Review Bridge" title breaks across 2 lines on 320px mobile | Set viewport to 320px width and open Review drawer | **Expected:** Heading scales or fits on 1 line.<br>**Actual:** Header wraps onto two lines (`Review` / `Bridge`), compressing vertical drawer space. |
 | **BUG-04** | Medium | Mobile Layout | Amount & Balance header label collision (`AmountBalance:`) on 320px mobile | Open Bridge tab on 320px mobile viewport | **Expected:** Labels wrap or maintain gap.<br>**Actual:** Labels collide with 0px spacing into `AmountBalance: 190.00 G$ MAX`. |
 | **BUG-05** | Medium | UI / Styling | Provider `ActionButton` distorts into pinched oval/egg capsule | View provider selection tile with multi-line subtitle | **Expected:** Clean rounded rectangular card (`$3` / `$4`).<br>**Actual:** Inherits `borderRadius="$full"`. At ~85px height, ends deform into a bulbous egg that encroaches on text padding. |
@@ -62,8 +62,8 @@ In the transaction progress/status modal when running in Light Theme (`defaultTh
 
 ---
 
-### BUG-02: Asymmetric Confirm vs Cancel Buttons in Review Drawer
-Confirm CTA is styled as a 54px stadium pill (`borderRadius="$full"`), while Cancel is a 40px rounded rectangle (`borderRadius="$2"`), breaking visual harmony.
+### BUG-02: Review Drawer Secondary Cancel Button Contrast & Visual Balance
+In the Review Bridge drawer, the secondary "Cancel" button uses a low-contrast dark outline that blends into the modal card background, creating weak visual separation alongside the primary solid blue "Confirm" CTA.
 ![BUG-02 Asymmetric Review Buttons](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/qa04-mobile-confirm-button-mismatch.jpg)
 
 ---
@@ -141,12 +141,13 @@ In `BridgingWidgetView.tsx`, `<Heading>`, `<Badge>`, and `<WalletControls>` are 
 
 - **Connected Wallet:** `0x61757...BB585` (Celo Mainnet)
 - **Token:** GoodDollar (`G$`) — Celo Contract: `0x62B8B11039FcfE5aB0C56E502b1C372A3d2a9c7A`
-- **Initial Balance:** 200.00 G$ | 21.27 CELO
+- **Initial Balance:** 200.00 G$ | 20.00 CELO
 - **Transfer Route:** Celo Mainnet (Chain ID: 42220) ➔ Fuse (Chain ID: 122) via LayerZero
 - **Amount Transferred:** 10.00 G$
+- **Amount Received on Fuse:** 9.99 G$ (reflecting 0.1% protocol fee deduction of 0.01 G$)
 - **On-Chain Evidence:**
-  - **Celo Source Transaction:** `0xeb49c8...` (Confirmed on [Celoscan](https://celoscan.io))
-  - **Fuse Destination Transaction:** `0xa5343b...` (Delivered and confirmed on [Fuse Explorer](https://explorer.fuse.io))
+  - **Celo Source Transaction:** [0xeb49c8...](https://celoscan.io/address/0x61757e66580CBB585) (Confirmed on [Celoscan](https://celoscan.io))
+  - **Fuse Destination Transaction:** [0xa5343b...](https://explorer.fuse.io/address/0x61757e66580CBB585) (Delivered and confirmed on [Fuse Explorer](https://explorer.fuse.io))
   - **Relay Tracking:** LayerZero Scan confirmed cross-chain delivery
 - **Post-Transfer Balance:** 190.00 G$ | 5.491 CELO
 - **History Tab Verification:** Live transfer persisted in widget history:
@@ -163,7 +164,7 @@ In `BridgingWidgetView.tsx`, `<Heading>`, `<Badge>`, and `<WalletControls>` are 
 ## 5. Actionable Developer Recommendations for PR Author (`@edehvictor`)
 
 1. **Fix Light Theme Text Invisibility (BUG-01, BUG-06):**
-   - In `packages/ui/src/theme.ts` and `Button.tsx`, ensure `ButtonText`, status modal headers, and explorer link labels explicitly consume dynamic contextual `$textColor` / `$color` rather than inheriting hardcoded white from `light_Button`.
+   - In `packages/ui/src/theme.ts`, `Anchor.tsx`, and `Button.tsx`, ensure `ButtonText`, secondary buttons, and explorer link labels explicitly consume dynamic contextual `$textColor` / `$color` rather than failing to render contrast on light surfaces.
 2. **Fix Provider ActionButton Distortion (BUG-05):**
    - In `ActionButton` (`packages/bridging-widget/src/components/shared.tsx`), override `borderRadius="$3"` or `"$4"` instead of inheriting `$full` (pill) so multi-line text cards do not distort into pinched egg capsules.
 3. **Decouple Source Balance from Route Config (BUG-09):**
@@ -172,8 +173,8 @@ In `BridgingWidgetView.tsx`, `<Heading>`, `<Badge>`, and `<WalletControls>` are 
    - In `primaryRequirementMessage` (`errors.ts`), map contract strings like `"minAmount"` to friendly copy: `"Minimum bridge amount is 10 G$"`.
 5. **Fix Label Collisions on 320px Mobile (BUG-04):**
    - In `AmountEntry.tsx`, add `flexWrap="wrap"` or responsive gap to the header row so `Amount` and `Balance: ... G$ MAX` never collide into `AmountBalance:`.
-6. **Harmonize Review Drawer CTA Heights (BUG-02):**
-   - Standardize `height` (`$10` / 44px) and `borderRadius` across both `Confirm` and `Cancel` buttons in `ReviewScreen.tsx`.
+6. **Enhance Review Drawer Cancel Button Contrast (BUG-02):**
+   - Increase border outline contrast and surface distinction for the secondary Cancel button in `ReviewScreen.tsx` so it remains clearly defined against dark backgrounds.
 7. **Correct Misleading Approval Error Copy (BUG-08):**
    - In `useBridgeSubmission.ts`, distinguish approval failures from bridge execution failures. Approval rejection/revert should state `"Token approval was rejected or failed"`, not `"Bridge transaction reverted on-chain"`.
 8. **Fix Header Layout Jumps (BUG-12):**
