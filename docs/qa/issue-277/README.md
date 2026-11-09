@@ -8,7 +8,7 @@
 - **Reviewer / QA Auditor:** `@HushLuxe`
 - **Automated Test Results:** **38 / 38 Passed (100%)**
 - **Live On-Chain Transfer:** **100% Confirmed** on Celo Mainnet ➔ Fuse via LayerZero
-- **Final Verdict:** **CHANGES REQUESTED** (Core functional routing and contract interactions succeed, but 12 verified styling, contrast, and resilience defects require remediation).
+- **Final Verdict:** **CHANGES REQUESTED** (Core functional routing and contract interactions succeed, but 11 verified styling, contrast, and resilience defects require remediation).
 
 ---
 
@@ -21,7 +21,7 @@ Every acceptance criteria scenario defined in Issue #277 and base Issue #257 was
 | **QA01** | First Use & Connection | Disconnected Fixture (`--no-wallet`) | **PASS** | Widget renders centered; placeholder `Balance: — G$` prevents flash of zero balance; `Connect Wallet` CTA is prominent; tabs switch cleanly. |
 | **QA02** | Routes & Providers | Injected Wallet / Runtime Fixtures | **PASS (BUG-05)** | Axelar is strictly isolated to Celo ↔ Ethereum; LayerZero is active across all supported chains. Zero premature network switch dialogs on route selection. *(Provider selection card inherits pill radius and distorts into a pinched oval).* |
 | **QA03** | Amounts & Fee Segregation | Injected Wallet / Runtime Fixtures | **PASS (BUG-07)** | Protocol fee is strictly segregated from native relayer fee (CELO). Route-specific rates verified: Fuse ➔ Celo quotes apply a 0.5% protocol fee (seen in review fixtures), while Celo ➔ Fuse quotes apply a 0.1% protocol fee (seen in live transfer); both calculations are accurate to contract config. *(16-decimal native provider fee string overflows container on small screens).* |
-| **QA04** | Review & Confirm Flow | Injected Wallet / Runtime Fixtures | **PASS (BUG-02, BUG-03)** | Review drawer presents complete fee breakdown and deferred network switch notice. *(Secondary Cancel button has weak outline contrast against dark drawer card compared to primary Confirm pill; modal title wraps to two lines on 320px screens).* |
+| **QA04** | Review & Confirm Flow | Injected Wallet / Runtime Fixtures | **PASS (BUG-03)** | Review drawer presents complete fee breakdown and deferred network switch notice. *(Modal title wraps to two lines on 320px screens).* |
 | **QA05** | Rejection & Recovery | Injected Wallet / Mocked SDK | **PASS (BUG-08)** | User wallet rejections and on-chain reverts halt at the exact failed step, render error banner, and provide a working `Retry` button. *(Misleading approval error copy states bridge transaction reverted).* |
 | **QA06** | Stale State & Interruptions | Automated Test Suite | **PASS** | In-flight request ID guards prevent stale quote overwrites. Rapid route and amount switching cancels pending requests cleanly without UI desynchronization. |
 | **QA07** | Progress & Delivery | Injected Wallet / Live Fixtures | **PASS (BUG-01)** | Stepper tracks token approval and cross-chain relay progression. Clickable explorer links for source and provider. *(In Light Theme, explorer link titles fail to render, appearing only as empty underlines with icons).* |
@@ -33,12 +33,12 @@ Every acceptance criteria scenario defined in Issue #277 and base Issue #257 was
 
 ---
 
-## 2. Master Bug & Defect Tracker (12 Verified Defects)
+## 2. Master Bug & Defect Tracker (11 Verified Defects)
 
 | Bug ID | Severity | Category | Description | Steps to Reproduce | Expected vs. Actual Result |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **BUG-01** | High | Accessibility | Light Theme invisible explorer link text in status modal | Open status modal in Light Theme (`defaultTheme="light"`) | **Expected:** High-contrast, readable explorer link labels.<br>**Actual:** Explorer link titles fail to render, leaving only blank underlines and external link icons. |
-| **BUG-02** | Low | UI / Visual Polish | Review drawer secondary Cancel button lacks contrast against dark drawer surface | Open Review Bridge drawer | **Expected:** Secondary Cancel CTA has clear border/background definition.<br>**Actual:** Dark outline Cancel button blends into drawer background next to high-contrast solid blue Confirm pill. |
+
 | **BUG-03** | Low | Mobile Layout | "Review Bridge" title breaks across 2 lines on 320px mobile | Set viewport to 320px width and open Review drawer | **Expected:** Heading scales or fits on 1 line.<br>**Actual:** Header wraps onto two lines (`Review` / `Bridge`), compressing vertical drawer space. |
 | **BUG-04** | Medium | Mobile Layout | Amount & Balance header label collision (`AmountBalance:`) on 320px mobile | Open Bridge tab on 320px mobile viewport | **Expected:** Labels wrap or maintain gap.<br>**Actual:** Labels collide with 0px spacing into `AmountBalance: 190.00 G$ MAX`. |
 | **BUG-05** | Medium | UI / Styling | Provider `ActionButton` distorts into pinched oval/egg capsule | View provider selection tile with multi-line subtitle | **Expected:** Clean rounded rectangular card (`$3` / `$4`).<br>**Actual:** Inherits `borderRadius="$full"`. At ~85px height, ends deform into a bulbous egg that encroaches on text padding. |
@@ -59,12 +59,6 @@ Every acceptance criteria scenario defined in Issue #277 and base Issue #257 was
 ### BUG-01: Light Theme Invisible Explorer Link Titles in Status Modal
 In the transaction progress/status modal when running in Light Theme (`defaultTheme="light"`), all three transaction explorer link labels (`Source transaction`, `Track on LayerZero`, `Destination transaction`) fail to render their text, appearing only as empty underlines with external link icons.
 ![BUG-01 Light Theme Modal Invisibility](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/qa07-light-theme-completed-links-invisible.jpg)
-
----
-
-### BUG-02: Review Drawer Secondary Cancel Button Contrast & Visual Balance
-In the Review Bridge drawer, the secondary "Cancel" button uses a low-contrast dark outline that blends into the modal card background, creating weak visual separation alongside the primary solid blue "Confirm" CTA.
-![BUG-02 Asymmetric Review Buttons](https://raw.githubusercontent.com/HushLuxe/GoodWidget/qa/issue-277-bridge-audit/docs/qa/issue-277/pass2_evidence/qa04-mobile-confirm-button-mismatch.jpg)
 
 ---
 
@@ -173,11 +167,9 @@ In `BridgingWidgetView.tsx`, `<Heading>`, `<Badge>`, and `<WalletControls>` are 
    - In `primaryRequirementMessage` (`errors.ts`), map contract strings like `"minAmount"` to friendly copy: `"Minimum bridge amount is 10 G$"`.
 5. **Fix Label Collisions on 320px Mobile (BUG-04):**
    - In `AmountEntry.tsx`, add `flexWrap="wrap"` or responsive gap to the header row so `Amount` and `Balance: ... G$ MAX` never collide into `AmountBalance:`.
-6. **Enhance Review Drawer Cancel Button Contrast (BUG-02):**
-   - Increase border outline contrast and surface distinction for the secondary Cancel button in `ReviewScreen.tsx` so it remains clearly defined against dark backgrounds.
-7. **Correct Misleading Approval Error Copy (BUG-08):**
+6. **Correct Misleading Approval Error Copy (BUG-08):**
    - In `useBridgeSubmission.ts`, distinguish approval failures from bridge execution failures. Approval rejection/revert should state `"Token approval was rejected or failed"`, not `"Bridge transaction reverted on-chain"`.
-8. **Fix Header Layout Jumps (BUG-12):**
+7. **Fix Header Layout Jumps (BUG-12):**
    - In `BridgingWidgetView.tsx`, nest `<Heading>` and `<Badge>` together inside an inner `<XStack gap="$2" alignItems="center">` so the network badge stays permanently pinned to the title, preventing erratic header wrapping and CLS when switching chains.
 
 ---
@@ -208,7 +200,7 @@ pnpm exec playwright test tests/widgets/bridging-widget/realAdapter.spec.ts
 
 The foundational bridging architecture introduced in PR #266 represents high-quality work: route filtering (Axelar vs LayerZero), cross-chain batch event queries, and two-step approval/relayer submissions function reliably and passed on-chain mainnet validation.
 
-However, based on independent human verification, **12 defects** are currently blocking full production readiness—primarily regarding **Light Theme text contrast (WCAG AA failures)**, **320px small-viewport layout collisions**, and **destination RPC error cascading (false zero balance display)**.
+However, based on independent human verification, **11 defects** are currently blocking full production readiness—primarily regarding **Light Theme text contrast (WCAG AA failures)**, **320px small-viewport layout collisions**, and **destination RPC error cascading (false zero balance display)**.
 
 **Verdict:** **CHANGES REQUESTED** pending the visual contrast, mobile layout, and balance resilience fixes detailed above.
 
