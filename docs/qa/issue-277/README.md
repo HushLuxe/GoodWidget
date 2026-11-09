@@ -28,7 +28,7 @@ Every acceptance criteria scenario defined in Issue #277 and base Issue #257 was
 | **QA08** | History Tab & Detail Modal | Injected Wallet / Live Fixtures | **PASS (BUG-06)** | Populated history tab displays live completed transactions. *(In Light Theme, secondary `"Refresh"` button text resolves pure white-on-white (`#FFFFFF` on `#FFFFFF`), invisible until hovered).* |
 | **QA09** | Mobile & Accessibility | Mobile Viewports (390px, 320px) | **PARTIAL** | On 320px viewports, `Amount` and `Balance:` collide (`AmountBalance:`), modal title wraps to 2 lines, and provider cards pinch. Yellow warning text fails WCAG AA contrast. |
 | **QA10** | Lead Design Comparison | Visual Design Comparison | **DOCUMENTED** | Structural layout complies with GoodWalletV2 specs; component radius inconsistencies and color token inheritance gaps documented. |
-| **QA11** | Independent Live Transfer | Live Celo Mainnet (`0x6175...b585`) | **PASS (Live Confirmed)** | Broadcasted 10.00 G$ transfer on Celo Mainnet via LayerZero. Confirmed on Celoscan(`0xeb49c8...`) and Fuse Explorer (`0xa5343b...`). *(Testing XDC route uncovered destination RPC failure cascading to zero balance BUG-09).* |
+| **QA11** | Independent Live Transfer | Live Celo Mainnet (`0x6175...b585`) | **PASS (Live Confirmed)** | Broadcasted 10.00 G$ transfer on Celo Mainnet via LayerZero. Confirmed on Celoscan (`0xeb49c8...`) and Fuse Explorer (`0xa5343b...`). *(Testing XDC route uncovered destination RPC failure cascading to zero balance BUG-09).* |
 | **QA12** | Live Rejection & Retry | Live Injected Wallet | **PASS (Live Confirmed)** | Live wallet rejection halts cleanly at `Approve G$ Needs attention`, leaving downstream bridging pending. Working `Retry` button restarts flow without page reload (See Section 4 & BUG-08 visual proof). |
 
 ---
@@ -38,7 +38,6 @@ Every acceptance criteria scenario defined in Issue #277 and base Issue #257 was
 | Bug ID | Severity | Category | Description | Steps to Reproduce | Expected vs. Actual Result |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **BUG-01** | High | Accessibility | Light Theme invisible explorer link text in status modal | Open status modal in Light Theme (`defaultTheme="light"`) | **Expected:** High-contrast, readable explorer link labels.<br>**Actual:** Explorer link titles fail to render, leaving only blank underlines and external link icons. |
-
 | **BUG-03** | Low | Mobile Layout | "Review Bridge" title breaks across 2 lines on 320px mobile | Set viewport to 320px width and open Review drawer | **Expected:** Heading scales or fits on 1 line.<br>**Actual:** Header wraps onto two lines (`Review` / `Bridge`), compressing vertical drawer space. |
 | **BUG-04** | Medium | Mobile Layout | Amount & Balance header label collision (`AmountBalance:`) on 320px mobile | Open Bridge tab on 320px mobile viewport | **Expected:** Labels wrap or maintain gap.<br>**Actual:** Labels collide with 0px spacing into `AmountBalance: 190.00 G$ MAX`. |
 | **BUG-05** | Medium | UI / Styling | Provider `ActionButton` distorts into pinched oval/egg capsule | View provider selection tile with multi-line subtitle | **Expected:** Clean rounded rectangular card (`$3` / `$4`).<br>**Actual:** Inherits `borderRadius="$full"`. At ~85px height, ends deform into a bulbous egg that encroaches on text padding. |
